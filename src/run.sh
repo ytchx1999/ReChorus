@@ -1,9 +1,25 @@
 #!/bin/sh -x
 
+##############################################
+# beauty
+python main.py --model_name NARM --gpu 0 --random_seed 2 --emb_size 64 --hidden_size 100 --attention_size 2 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'beauty' --epoch 10
+python main.py --model_name GRU4Rec --gpu 0 --random_seed 2 --emb_size 64 --hidden_size 100 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'beauty'
+python main.py --model_name Caser  --gpu 0 --random_seed 0 --emb_size 64 --L 3 --num_horizon 64 --num_vertical 32 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'beauty'
+##############################################
+# meituan_big
+python main.py --model_name NARM --gpu 3 --random_seed 2 --emb_size 64 --hidden_size 100 --attention_size 1 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'meituan_big' --epoch 5  # attn 1 epoch 5
+python main.py --model_name GRU4Rec --gpu 0 --random_seed 0 --emb_size 64 --hidden_size 100 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'meituan_big'
+python main.py --model_name Caser  --gpu 3 --random_seed 2 --emb_size 64 --L 3 --num_horizon 64 --num_vertical 32 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'meituan_big' --epoch 5
+##############################################
+# gowalla
+python main.py --model_name NARM --gpu 2 --random_seed 2 --emb_size 64 --hidden_size 100 --attention_size 2 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'gowalla'
+python main.py --model_name GRU4Rec --gpu 1 --random_seed 0 --emb_size 64 --hidden_size 100 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'gowalla'
+python main.py --model_name Caser  --gpu 2 --random_seed 2 --emb_size 64 --L 3 --num_horizon 64 --num_vertical 32 --lr 1e-3 --l2 1e-4 --history_max 20 --dataset 'gowalla'
+##############################################
 # Grocery_and_Gourmet_Food
-python main.py --model_name POP --train 0 --dataset 'Grocery_and_Gourmet_Food'
+python main.py --model_name POP --test_all 1 --train 0 --dataset 'Grocery_and_Gourmet_Food'
 
-python main.py --model_name BPRMF --emb_size 64 --lr 1e-3 --l2 1e-6 --dataset 'Grocery_and_Gourmet_Food'
+python main.py --model_name BPRMF --test_all 1 --emb_size 64 --lr 1e-3 --l2 1e-6 --dataset 'Grocery_and_Gourmet_Food'
 
 python main.py --model_name NeuMF --emb_size 64 --layers '[64]' --lr 5e-4 --l2 1e-7 --dropout 0.2 --dataset 'Grocery_and_Gourmet_Food'
 

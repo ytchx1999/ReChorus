@@ -76,6 +76,8 @@ def main():
     if args.train > 0:
         runner.train(data_dict)
     eval_res = runner.print_res(data_dict['test'])
+    eval_res_val = runner.print_res(data_dict['dev'])
+    logging.info(os.linesep + 'Valid After Training: ' + eval_res_val)
     logging.info(os.linesep + 'Test After Training: ' + eval_res)
     # save_rec_results(data_dict['dev'], runner, 100)
     model.actions_after_train()

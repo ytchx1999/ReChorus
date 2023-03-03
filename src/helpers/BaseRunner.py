@@ -18,7 +18,7 @@ from models.BaseModel import BaseModel
 class BaseRunner(object):
     @staticmethod
     def parse_runner_args(parser):
-        parser.add_argument('--epoch', type=int, default=200,
+        parser.add_argument('--epoch', type=int, default=10,
                             help='Number of epochs.')
         parser.add_argument('--check_epoch', type=int, default=1,
                             help='Check some tensors every check_epoch.')
@@ -40,9 +40,9 @@ class BaseRunner(object):
                             help='Number of processors when prepare batches in DataLoader')
         parser.add_argument('--pin_memory', type=int, default=0,
                             help='pin_memory in DataLoader')
-        parser.add_argument('--topk', type=str, default='5,10,20,50',
+        parser.add_argument('--topk', type=str, default='10,20',
                             help='The number of items recommended to each user.')
-        parser.add_argument('--metric', type=str, default='NDCG,HR',
+        parser.add_argument('--metric', type=str, default='NDCG,HR,MRR',
                             help='metrics: NDCG, HR')
         return parser
 
@@ -65,6 +65,8 @@ class BaseRunner(object):
                     evaluations[key] = hit.mean()
                 elif metric == 'NDCG':
                     evaluations[key] = (hit / np.log2(gt_rank + 1)).mean()
+                elif metric == 'MRR':
+                    evaluations[key] = (float(1) / gt_rank).mean()
                 else:
                     raise ValueError('Undefined evaluation metric: {}.'.format(metric))
         return evaluations
@@ -206,14 +208,15 @@ class BaseRunner(object):
             predictions.extend(prediction.cpu().data.numpy())
         predictions = np.array(predictions)
 
-        if dataset.model.test_all:
-            rows, cols = list(), list()
-            for i, u in enumerate(dataset.data['user_id']):
-                clicked_items = list(dataset.corpus.train_clicked_set[u] | dataset.corpus.residual_clicked_set[u])
-                idx = list(np.ones_like(clicked_items) * i)
-                rows.extend(idx)
-                cols.extend(clicked_items)
-            predictions[rows, cols] = -np.inf
+        # ?
+        # if dataset.model.test_all:
+        #     rows, cols = list(), list()
+        #     for i, u in enumerate(dataset.data['user_id']):
+        #         clicked_items = list(dataset.corpus.train_clicked_set[u] | dataset.corpus.residual_clicked_set[u])
+        #         idx = list(np.ones_like(clicked_items) * i)
+        #         rows.extend(idx)
+        #         cols.extend(clicked_items)
+        #     predictions[rows, cols] = -np.inf
 
         return predictions
 
